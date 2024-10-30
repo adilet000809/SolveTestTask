@@ -23,7 +23,7 @@ public class Recipe {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Drink coffeeType;
+    private CoffeeType coffeeType;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredient> recipeIngredients;

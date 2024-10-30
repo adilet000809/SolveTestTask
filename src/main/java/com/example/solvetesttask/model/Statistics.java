@@ -18,7 +18,7 @@ public class Statistics {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Drink coffeeType;
+    private CoffeeType coffeeType;
 
     @Column(nullable = false)
     private int count;

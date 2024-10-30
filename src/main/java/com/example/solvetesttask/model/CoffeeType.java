@@ -1,5 +1,5 @@
 package com.example.solvetesttask.model;
 
-public enum Drink {
+public enum CoffeeType {
     AMERICANO, ESPRESSO, CAPPUCCINO
 }
