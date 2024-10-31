@@ -1,13 +1,7 @@
 package com.example.solvetesttask.service;
 
-import com.example.solvetesttask.factory.CoffeeFactory;
-import com.example.solvetesttask.model.Coffee;
-import com.example.solvetesttask.model.CoffeeType;
-import com.example.solvetesttask.model.Recipe;
-import com.example.solvetesttask.model.RecipeIngredient;
+import com.example.solvetesttask.model.*;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CoffeeMachineService {
@@ -27,7 +21,9 @@ public class CoffeeMachineService {
             throw new RuntimeException("Ingredient not available");
         }
 
-        recipe.getRecipeIngredients().stream().map()
+        ingredientService.updateIngredient(recipe);
+
+        statisticsService.addOrUpdateStatistics(coffeeType);
 
     }
 }

@@ -5,5 +5,5 @@ import com.example.solvetesttask.model.Recipe;
 
 public interface RecipeService {
     Recipe getRecipeByNameAndDrinkType(String name, CoffeeType coffeeType);
-    void addRecipe(Recipe recipe);
+    Recipe addRecipe(Recipe recipe);
 }

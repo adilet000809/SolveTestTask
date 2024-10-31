@@ -22,4 +22,8 @@ public class Statistics {
 
     @Column(nullable = false)
     private int count;
+
+    public void incrementCount() {
+        count++;
+    }
 }

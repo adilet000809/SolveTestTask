@@ -6,6 +6,10 @@ import com.example.solvetesttask.model.RecipeIngredient;
 import com.example.solvetesttask.repository.IngredientRepository;
 import com.example.solvetesttask.service.IngredientService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
@@ -21,8 +25,14 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public void updateIngredient(Ingredient ingredient) {
-        ingredientRepository.save(ingredient);
+    @Transactional
+    public void updateIngredient(Recipe recipe) {
+        recipe.getRecipeIngredients()
+                .stream()
+                .map(recipeIngredient -> {
+                    recipeIngredient.getIngredient().withdraw(recipeIngredient.getQuantity());
+                    return recipeIngredient.getIngredient();
+                }).forEach(ingredientRepository::save);
     }
 
     @Override
@@ -33,6 +43,11 @@ public class IngredientServiceImpl implements IngredientService {
             return ingredient.getBalance() < recipeIngredient.getQuantity();
         }
         return true;
+    }
+
+    @Override
+    public Optional<Ingredient> getIngredientByName(String name) {
+        return ingredientRepository.findIngredientByName(name);
     }
 
 
