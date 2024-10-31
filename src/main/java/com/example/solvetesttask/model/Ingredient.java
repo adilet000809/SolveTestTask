@@ -1,5 +1,6 @@
 package com.example.solvetesttask.model;
 
+import com.example.solvetesttask.exception.ServiceUnavailableException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class Ingredient {
 
     public void withdraw(int amount) {
         if (amount > balance) {
-            throw new IllegalArgumentException("Not enough balance");
+            throw new ServiceUnavailableException("Insufficient amount of an ingredient");
         }
         balance -= amount;
     }

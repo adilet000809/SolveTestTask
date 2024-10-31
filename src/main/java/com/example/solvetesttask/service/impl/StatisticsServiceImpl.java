@@ -1,12 +1,11 @@
 package com.example.solvetesttask.service.impl;
 
+import com.example.solvetesttask.exception.EntityNotFoundException;
 import com.example.solvetesttask.model.CoffeeType;
 import com.example.solvetesttask.model.Statistics;
 import com.example.solvetesttask.repository.StatisticsRepository;
 import com.example.solvetesttask.service.StatisticsService;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
@@ -17,8 +16,9 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public Statistics getPopularDrinkType() {
-        return statisticsRepository.getTopByOrderByCountDesc();
+    public Statistics getPopularCoffeeType() {
+        return statisticsRepository.findTopByOrderByCountDesc()
+                .orElseThrow(() -> new EntityNotFoundException("Popular coffee drink not found or not determined yet"));
     }
 
     @Override

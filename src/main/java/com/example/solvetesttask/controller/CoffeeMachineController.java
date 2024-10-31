@@ -3,7 +3,6 @@ package com.example.solvetesttask.controller;
 import com.example.solvetesttask.dto.IngredientDto;
 import com.example.solvetesttask.dto.RecipeDto;
 import com.example.solvetesttask.dto.StatisticsDto;
-import com.example.solvetesttask.exception.ServiceUnavailableException;
 import com.example.solvetesttask.model.*;
 import com.example.solvetesttask.service.CoffeeMachineService;
 import com.example.solvetesttask.service.IngredientService;
@@ -13,12 +12,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/coffee-machine")
@@ -39,59 +34,41 @@ public class CoffeeMachineController {
     @Operation(summary = "Prepare coffee drink")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Coffee is being prepared"),
-            @ApiResponse(responseCode = "404", description = "Coffee type or recipe not found"),
+            @ApiResponse(responseCode = "400", description = "Coffee type or recipe not found"),
             @ApiResponse(responseCode = "503", description = "Service unavailable")})
     @PostMapping("/prepare")
-    public ResponseEntity<String> prepareDrink(@RequestParam String coffeeType, @RequestParam String recipeName) {
-        try {
-            coffeeMachineService.makeCoffee(CoffeeType.valueOf(coffeeType), recipeName);
-            return ResponseEntity.ok(coffeeType + " is being prepared.");
-        } catch (ServiceUnavailableException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    public ResponseEntity<String> prepareDrink(@RequestParam CoffeeType coffeeType, @RequestParam String recipeName) {
+        coffeeMachineService.makeCoffee(coffeeType, recipeName);
+        return ResponseEntity.ok(coffeeType + " is being prepared.");
     }
 
     @Operation(summary = "Add coffee recipe")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Recipe has been added successfully")})
+            @ApiResponse(responseCode = "200", description = "Recipe has been added successfully"),
+            @ApiResponse(responseCode = "400", description = "Entity not found")})
     @PostMapping("/recipe/add")
     public ResponseEntity<String> addRecipe(@RequestBody RecipeDto recipeDto) {
-        Recipe recipe = recipeService.addRecipe(new Recipe(null, recipeDto.getName(), recipeDto.getCoffeeType(), null));
-        List<RecipeIngredient> recipeIngredients = new ArrayList<>();
-        for (IngredientDto ingredientDto : recipeDto.getIngredients()) {
-            Ingredient ingredient = ingredientService.getIngredientByName(ingredientDto.getName()).orElseThrow();
-            RecipeIngredient recipeIngredient = new RecipeIngredient();
-            recipeIngredient.setRecipe(recipe);
-            recipeIngredient.setIngredient(ingredient);
-            recipeIngredient.setQuantity(ingredientDto.getQuantity());
-            recipeIngredients.add(recipeIngredient);
-        }
-        recipe.setRecipeIngredients(recipeIngredients);
-        recipeService.addRecipe(recipe);
-        return ResponseEntity.ok(recipe.toString());
+        recipeService.addRecipe(recipeDto);
+        return ResponseEntity.ok("Recipe has been added successfully");
     }
 
-    @Operation(summary = "Add coffee ingredient")
+    @Operation(summary = "Top up coffee ingredient balance")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ingredient has been added successfully")})
     @PostMapping("/ingredient/add")
-    public ResponseEntity<String> addIngredient(@RequestBody IngredientDto ingredientDto) {
+    public ResponseEntity<String> topUpIngredientBalance(@RequestBody IngredientDto ingredientDto) {
         Ingredient ingredient = new Ingredient(null, ingredientDto.getName(), ingredientDto.getQuantity());
         ingredientService.addIngredient(ingredient);
-        return ResponseEntity.ok(ingredient.toString());
+        return ResponseEntity.ok("Ingredient has been added successfully");
     }
 
-    @Operation(summary = "Get popular coffee drink type")
+    @Operation(summary = "Get popular coffee drink")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ingredient has been added successfully")})
-    @PostMapping("/popularDrink")
+            @ApiResponse(responseCode = "200", description = "Popular coffee drink"),
+            @ApiResponse(responseCode = "400", description = "Entity not found")})
+    @GetMapping("/popularDrink")
     public ResponseEntity<StatisticsDto> getPopularCoffeeDrink() {
-        Statistics statistics = statisticsService.getPopularDrinkType();
-        StatisticsDto statisticsDto = new StatisticsDto(statistics.getCoffeeType(), statistics.getCount());
-        return ResponseEntity.ok(statisticsDto);
+        Statistics statistics = statisticsService.getPopularCoffeeType();
+        return ResponseEntity.ok(new StatisticsDto(statistics.getCoffeeType(), statistics.getCount()));
     }
 }
