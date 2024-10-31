@@ -40,7 +40,9 @@ public class IngredientServiceImpl implements IngredientService {
         for (RecipeIngredient recipeIngredient : recipe.getRecipeIngredients()) {
             Ingredient ingredient = ingredientRepository.findIngredientByName(recipeIngredient.getIngredient().getName())
                     .orElseThrow(() -> new RuntimeException("Ingredient not found"));
-            return ingredient.getBalance() < recipeIngredient.getQuantity();
+            if (ingredient.getBalance() < recipeIngredient.getQuantity()) {
+                return false;
+            }
         }
         return true;
     }

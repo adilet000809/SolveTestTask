@@ -4,9 +4,11 @@ import com.example.solvetesttask.model.CoffeeType;
 import com.example.solvetesttask.model.Statistics;
 import com.example.solvetesttask.repository.StatisticsRepository;
 import com.example.solvetesttask.service.StatisticsService;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class StatisticsServiceImpl implements StatisticsService {
     private final StatisticsRepository statisticsRepository;
 
