@@ -46,5 +46,4 @@ public class HolidayServiceImpl implements HolidayService {
             throw new ServiceUnavailableException("Service unavailable");
         }
     }
-
 }

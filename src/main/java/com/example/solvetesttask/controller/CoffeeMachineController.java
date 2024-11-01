@@ -24,7 +24,10 @@ public class CoffeeMachineController {
     private final IngredientService ingredientService;
     private final StatisticsService statisticsService;
 
-    public CoffeeMachineController(CoffeeMachineService coffeeMachineService, RecipeService recipeService, IngredientService ingredientService, StatisticsService statisticsService) {
+    public CoffeeMachineController(CoffeeMachineService coffeeMachineService,
+                                   RecipeService recipeService,
+                                   IngredientService ingredientService,
+                                   StatisticsService statisticsService) {
         this.coffeeMachineService = coffeeMachineService;
         this.recipeService = recipeService;
         this.ingredientService = ingredientService;
